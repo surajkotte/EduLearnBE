@@ -71,4 +71,19 @@ categoryRouter.get("/getCategoryById/:learningModuleId", async (req, res) => {
   }
 });
 
+categoryRouter.get(
+  "/getCategoryTestConfig/:learningModuleId",
+  async (req, res) => {
+    try {
+      const category = await Category.findOne({ learningModuleId });
+      if (!category) {
+        return res.status(200).json({ messageType: "S", data: [] });
+      }
+      res.status(200).json({ messageType: "S", data: category?.testConfig });
+    } catch (err) {
+      res.status(500).json({ messageType: "E", message: err.message });
+    }
+  }
+);
+
 module.exports = categoryRouter;
