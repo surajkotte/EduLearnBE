@@ -42,7 +42,7 @@ categoryRouter.post("/createNew/:learningModuleId", async (req, res) => {
         learningModuleId,
       });
       await newCategory.save();
-      res.status.json({ messageType: "S", data: newCategory });
+      res.status(200).json({ messageType: "S", data: newCategory });
     }
   } catch (error) {
     res.status(500).json({ messageType: "E", message: error.message });
