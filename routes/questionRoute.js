@@ -45,7 +45,6 @@ questionRouter.get("/getAllQuestions/:categoryId", async (req, res) => {
   const { categoryId } = req.params;
   try {
     const questions = await Question.findOne({ categoryId });
-    console.log(questions);
     if (!questions) {
       return res.status(200).json({ messageType: "S", data: [] });
     }
@@ -103,6 +102,30 @@ questionRouter.put("/update/:categoryId", async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ messageType: "E", message: error.message });
+  }
+});
+
+questionRouter.post("/deleteQuestion/:questionId", async (req, res) => {
+  const { questionId } = req.params;
+  const { categoryId } = req.body;
+  try {
+    console.log(questionId);
+    const questions = await Question.findOne({ categoryId });
+    if (questions) {
+      const updatedQuestionData = questions?.questionData?.filter((q) => {
+        return q?._id.toString() != questionId;
+      });
+      console.log(updatedQuestionData);
+      questions['questionData'] = updatedQuestionData
+      const responseData = await questions.save();
+      if (responseData) {
+        res.status(200).json({ messageType: "S", data: responseData });
+      } else {
+        res.status(200).json({ messageType: "S", data: [] });
+      }
+    }
+  } catch (err) {
+    res.status(500).json({ messageType: "E", message: err.message });
   }
 });
 module.exports = questionRouter;
