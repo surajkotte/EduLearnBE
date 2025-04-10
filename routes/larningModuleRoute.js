@@ -1,7 +1,8 @@
 const express = require("express");
 const learningModuleRouter = express.Router();
 const LearningModule = require("../modals/learningModuleModal");
-learningModuleRouter.get("/getAll", async (req, res) => {
+const userAuth = require("../middlewares/auth");
+learningModuleRouter.get("/getAll", userAuth, async (req, res) => {
   try {
     const learningModules = await LearningModule.find();
     res.status(200).json({ messageType: "S", data: learningModules });
