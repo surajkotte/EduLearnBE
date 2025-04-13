@@ -28,7 +28,8 @@ UserRouter.post("/login", async (req, res) => {
       //     "Access-Control-Allow-Headers",
       //     "Origin,X-Requested-With,Content-Type,Accept,content-type,application/json"
       //   );
-      res.json({
+      console.log("sending response");
+      res.status(200).json({
         messageType: "S",
         data: {
           firstName: userData?.firstName,
@@ -40,6 +41,8 @@ UserRouter.post("/login", async (req, res) => {
           education: userData?.education,
         },
       });
+    }else{
+      throw new Error('Invalid password')
     }
   } catch (err) {
     res.status(400).json({ messageType: "E", message: err.message });

@@ -116,7 +116,7 @@ questionRouter.post("/deleteQuestion/:questionId", async (req, res) => {
         return q?._id.toString() != questionId;
       });
       console.log(updatedQuestionData);
-      questions['questionData'] = updatedQuestionData
+      questions["questionData"] = updatedQuestionData;
       const responseData = await questions.save();
       if (responseData) {
         res.status(200).json({ messageType: "S", data: responseData });
@@ -128,4 +128,18 @@ questionRouter.post("/deleteQuestion/:questionId", async (req, res) => {
     res.status(500).json({ messageType: "E", message: err.message });
   }
 });
+questionRouter.post("/deleteAll", async (req, res) => {
+  const { categoryId } = req.body;
+  try {
+    const response = await Question.deleteMany({ categoryId: categoryId });
+    if (response) {
+      res.status(200).json({ messageType: "S", data: response });
+    } else {
+      res.status(200).json({ messageType: "S", data: [] });
+    }
+  } catch (err) {
+    res.status(500).json({ messageType: "E", message: err.message });
+  }
+});
+
 module.exports = questionRouter;

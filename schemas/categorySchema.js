@@ -1,4 +1,18 @@
+const { type } = require("express/lib/response");
 const mongoose = require("mongoose");
+const metaDataSchema = new mongoose.Schema(
+  {
+    numberOfQuestions: {
+      type: Number,
+      default: 0,
+    },
+    numberOfQuestionsAnswered: {
+      type: Number,
+      default: 0,
+    },
+  },
+  { timestamps: true }
+);
 const categoryMetaData = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String },
@@ -8,6 +22,7 @@ const categoryMetaData = new mongoose.Schema({
     enum: ["Subject", "Topic", "Difficulty", "Test"],
     required: true,
   },
+  additionalInfo: metaDataSchema,
 });
 const categorySchema = new mongoose.Schema(
   {

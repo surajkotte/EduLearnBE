@@ -1,5 +1,6 @@
 const express = require("express");
 const Category = require("../modals/categoryModal");
+const Question = require("../modals/questionModal");
 const categoryRouter = express.Router();
 
 categoryRouter.post("/createNew/:learningModuleId", async (req, res) => {
@@ -85,5 +86,35 @@ categoryRouter.get(
     }
   }
 );
+
+categoryRouter.post("/deleteCategory", async (req, res) => {
+  const { categoryId, learningModuleId } = req.body;
+  try {
+    const response = await Question.find({ categoryId });
+    if (response && response.length == 0) {
+      const catResponse = await Category.findOne({
+        learningModuleId: learningModuleId,
+      });
+      if (catResponse) {
+        const newCategory = catResponse?.categoryData?.filter(
+          (item) => item?._id.toString() != categoryId
+        );
+        catResponse["categoryData"] = newCategory;
+        const resposeData = await catResponse.save();
+        if (resposeData) {
+          res.json({ messageType: "S", data: resposeData });
+        } else {
+          throw new Error("Failed to delete category");
+        }
+      } else {
+        throw new Error("failed to delete category");
+      }
+    } else {
+      throw new Error("Please delete internal questions first");
+    }
+  } catch (err) {
+    res.status(400).json({ messageType: "E", message: err.message });
+  }
+});
 
 module.exports = categoryRouter;
