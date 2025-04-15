@@ -39,10 +39,11 @@ UserRouter.post("/login", async (req, res) => {
           age: userData?.age,
           skills: userData?.skills,
           education: userData?.education,
+          id: userData?._id,
         },
       });
-    }else{
-      throw new Error('Invalid password')
+    } else {
+      throw new Error("Invalid password");
     }
   } catch (err) {
     res.status(400).json({ messageType: "E", message: err.message });
