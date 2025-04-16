@@ -1,26 +1,39 @@
 const express = require("express");
 const learningModuleRouter = express.Router();
 const LearningModule = require("../modals/learningModuleModal");
+const organizationModel = require("../modals/organizationModel");
 const userAuth = require("../middlewares/auth");
-learningModuleRouter.get("/getAll", userAuth, async (req, res) => {
-  try {
-    const learningModules = await LearningModule.find();
-    res.status(200).json({ messageType: "S", data: learningModules });
-  } catch (error) {
-    res.status(400).json({ messageType: "E", message: error.message });
+learningModuleRouter.get(
+  "/getAll/:organizationId",
+  userAuth,
+  async (req, res) => {
+    const { organizationId } = req.params;
+    try {
+      console.log(organizationId);
+      const learningModules = await LearningModule.find({
+        organizationId: organizationId,
+      });
+      res.status(200).json({ messageType: "S", data: learningModules });
+    } catch (error) {
+      res.status(400).json({ messageType: "E", message: error.message });
+    }
   }
-});
+);
 learningModuleRouter.post("/createNew", async (req, res) => {
-  const { name, description, image, logo, status, progress } = req.body;
-
+  const { name, description, image, logo, status, progress, organizationId } =
+    req.body;
+  const organizationInfo = await organizationModel.findOne({
+    _id: organizationId,
+  });
   try {
     const newLearningModule = new LearningModule({
       name,
       description,
       image,
-      logo,
       status,
       progress,
+      logo: organizationInfo?.organizationLogo,
+      organizationId,
     });
     const responseData = await newLearningModule.save();
     if (responseData) {

@@ -13,6 +13,11 @@ const learningModuleSchema = new mongoose.Schema(
     },
     progress: { type: Number, default: 0 },
     logo: { type: String },
+    organizationId: {
+      type: mongoose.Schema.ObjectId,
+      required: true,
+      refs: "organizationModel",
+    },
   },
   {
     timestamps: true,

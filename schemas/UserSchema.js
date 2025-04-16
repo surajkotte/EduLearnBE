@@ -1,3 +1,4 @@
+const { type } = require("express/lib/response");
 const mongoose = require("mongoose");
 const validator = require("validator");
 const userSchema = mongoose.Schema(
@@ -59,6 +60,11 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
       enum: ["Parent", "Child", "Admin", "Staff"],
+    },
+    organizationId: {
+      type: mongoose.Schema.ObjectId,
+      ref: "organizationModel",
+      required: true,
     },
   },
   { timestamps: true }

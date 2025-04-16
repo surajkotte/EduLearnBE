@@ -3,6 +3,7 @@ const UserModal = require("../modals/userModal");
 const UserRouter = express.Router();
 const bcrypt = require("bcrypt");
 const JWT = require("jsonwebtoken");
+const organizationModel = require("../modals/organizationModel");
 
 UserRouter.post("/login", async (req, res) => {
   const { emailId, password } = req.body;
@@ -40,6 +41,8 @@ UserRouter.post("/login", async (req, res) => {
           skills: userData?.skills,
           education: userData?.education,
           id: userData?._id,
+          organizationId: userData?.organizationId,
+          userCategory: userData?.userCategory,
         },
       });
     } else {
@@ -63,11 +66,24 @@ UserRouter.post("/signup", async (req, res) => {
     organization,
     userCategory,
   } = req.body;
+  let orgId = null;
   try {
     if (!emailId || !password) {
       throw new Error("Please enter all the details");
     }
     const passwordHash = await bcrypt.hash(password, 10);
+    const organizationFind = await organizationModel.findOne({
+      organizationName: organization,
+    });
+    if (!organizationFind) {
+      const newOrganization = new organizationModel({
+        organizationName: organization,
+      });
+      const orgRes = await newOrganization.save();
+      orgId = orgRes?._id;
+    } else {
+      orgId = organizationFind?._id;
+    }
     const User = await UserModal({
       firstName,
       lastName,
@@ -79,6 +95,7 @@ UserRouter.post("/signup", async (req, res) => {
       about,
       organization,
       userCategory,
+      organizationId: orgId,
     });
     const response = await User.save();
     if (response) {
