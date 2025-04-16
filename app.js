@@ -16,6 +16,7 @@ const learningModuleRouter = require("./routes/larningModuleRoute");
 const questionRouter = require("./routes/questionRoute");
 const userRouter = require("./routes/UserRoute");
 const authorizationRouter = require("./routes/authorizationRoute");
+const userGroupRouter = require("./routes/userGroupRoute");
 app.use(bodyParser.urlencoded({ extended: true }));
 dotenv.config();
 const PORT = process.env.PORT;
@@ -24,6 +25,7 @@ app.use("/learning/", learningModuleRouter);
 app.use("/category/", categoryRouter);
 app.use("/questions/", questionRouter);
 app.use("/authorization/", authorizationRouter);
+app.use("/userroute/", userGroupRouter);
 connectDB()
   .then(() => {
     app.listen(PORT, () => {

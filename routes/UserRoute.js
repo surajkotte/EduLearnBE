@@ -3,6 +3,7 @@ const UserModal = require("../modals/userModal");
 const UserRouter = express.Router();
 const bcrypt = require("bcrypt");
 const JWT = require("jsonwebtoken");
+const userAuth = require("../middlewares/auth");
 const organizationModel = require("../modals/organizationModel");
 
 UserRouter.post("/login", async (req, res) => {
@@ -143,4 +144,24 @@ UserRouter.get("/checkAuth", async (req, res) => {
   }
 });
 
+UserRouter.get(
+  "/getAllUsers/:userCategory/:organizationId",
+  userAuth,
+  async (req, res) => {
+    const { organizationId, userCategory } = req.params;
+    try {
+      const response = await UserModal.find({
+        organizationId: organizationId,
+        userCategory: userCategory,
+      });
+      if (response) {
+        res.status(200).json({ messageType: "S", data: response });
+      } else {
+        res.status(200).json({ messageType: "S", data: [] });
+      }
+    } catch (err) {
+      res.status(400).json({ messageType: "E", message: err.message });
+    }
+  }
+);
 module.exports = UserRouter;
