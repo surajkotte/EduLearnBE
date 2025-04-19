@@ -59,7 +59,7 @@ const userSchema = mongoose.Schema(
     userCategory: {
       type: String,
       required: true,
-      enum: ["Parent", "Child", "Admin", "Staff"],
+      enum: ["Parent", "Student", "Admin", "Staff"],
     },
     organizationId: {
       type: mongoose.Schema.ObjectId,

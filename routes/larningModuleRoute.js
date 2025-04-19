@@ -2,6 +2,8 @@ const express = require("express");
 const learningModuleRouter = express.Router();
 const LearningModule = require("../modals/learningModuleModal");
 const organizationModel = require("../modals/organizationModel");
+const UserModuleModel = require("../modals/UserModuleModel");
+const userGroupModel = require("../modals/userGroupModel");
 const userAuth = require("../middlewares/auth");
 learningModuleRouter.get(
   "/getAll/:organizationId",
@@ -99,4 +101,58 @@ learningModuleRouter.delete("/delete/:id", async (req, res) => {
     res.status(500).json({ messageType: "E", message: error.message });
   }
 });
+
+learningModuleRouter.post(
+  "/assignModules/:organizationId",
+  async (req, res) => {
+    const { learningModules, GroupId } = req.body;
+    const { organizationId } = req.params;
+    const assignmentResults = [];
+    try {
+      const findUserGroup = await userGroupModel.findOne({ _id: GroupId });
+      if (findUserGroup) {
+        const users = findUserGroup?.users;
+        users?.forEach(async (user) => {
+          const response = await UserModuleModel.find({
+            userId: user?.userId,
+            organizationId: organizationId,
+          });
+          console.log(response);
+          if (response && response?.length != 0) {
+            const moduleMap = new Map();
+            response.modules?.forEach((mod) => {
+              moduleMap.set(mod.moduleId.toString(), mod);
+            });
+            for (const newModule of learningModules) {
+              const existingModule = moduleMap.get(
+                newModule.moduleId.toString()
+              );
+              if (existingModule) {
+                existingModule.readAccess = newModule.readAccess;
+                existingModule.writeAccess = newModule.writeAccess;
+              } else {
+                response?.modules?.push(newModule);
+              }
+            }
+            const res1 = await response.save();
+            assignmentResults.push(res1);
+          } else {
+            const newUserModule = new UserModuleModel({
+              userId: user?.userId,
+              organizationId: organizationId,
+              modules: learningModules,
+            });
+            const response = await newUserModule.save();
+            assignmentResults.push(response);
+          }
+        });
+        res.status(200).json({ messageType: "S", data: assignmentResults });
+      } else {
+        throw new Error("GroupId not found");
+      }
+    } catch (err) {
+      res.status(400).json({ messageType: "E", message: err.message });
+    }
+  }
+);
 module.exports = learningModuleRouter;
