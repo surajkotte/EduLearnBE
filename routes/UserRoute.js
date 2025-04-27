@@ -38,7 +38,7 @@ UserRouter.post("/login", async (req, res) => {
           lastName: userData?.lastName,
           gender: userData?.gender,
           photoURL: userData?.photoURL,
-          age: userData?.age,
+          dateOfBirth: userData?.dateOfBirth,
           skills: userData?.skills,
           education: userData?.education,
           id: userData?._id,
@@ -60,7 +60,7 @@ UserRouter.post("/signup", async (req, res) => {
     lastName,
     emailId,
     password,
-    age,
+    dateOfBirth,
     gender,
     photoURL,
     about,
@@ -90,7 +90,7 @@ UserRouter.post("/signup", async (req, res) => {
       lastName,
       emailId,
       password: passwordHash,
-      age,
+      dateOfBirth,
       gender,
       photoURL,
       about,
@@ -164,4 +164,50 @@ UserRouter.get(
     }
   }
 );
+
+UserRouter.get("/getAllUsers/:organizationId", userAuth, async (req, res) => {
+  const { organizationId } = req.params;
+  try {
+    const response = await UserModal.find({
+      organizationId: organizationId,
+    });
+    if (response) {
+      res.status(200).json({ messageType: "S", data: response });
+    } else {
+      res.status(200).json({ messageType: "S", data: [] });
+    }
+  } catch (err) {
+    res.status(400).json({ messageType: "E", message: err.message });
+  }
+});
+
+UserRouter.put("/updateUser/:userId", async (req, res) => {
+  const { userId } = req.params;
+  const { firstName, lastName, emailId, dateOfBirth, gender, photoURL } =
+    req.body;
+  console.log(userId);
+  try {
+    const userData = await UserModal.findById({ _id: userId });
+    console.log(userData);
+    if (!userData) {
+      throw new Error("User not found");
+    }
+    const updatedUser = await UserModal.findByIdAndUpdate(userId, {
+      firstName,
+      lastName,
+      emailId,
+      dateOfBirth,
+      gender,
+      photoURL,
+    });
+    if (updatedUser) {
+      res.status(200).json({ messageType: "S", data: updatedUser });
+    } else {
+      throw new Error("Unable to update user");
+    }
+  } catch (err) {
+    res.status(400).json({ messageType: "E", message: err.message });
+  }
+});
+
 module.exports = UserRouter;

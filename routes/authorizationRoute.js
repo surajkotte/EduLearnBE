@@ -45,8 +45,8 @@ authorizationRouter.get("/getAutorization/:userId", async (req, res) => {
     } else {
       const newAuthorizationModal = new authorizationModal({
         userId: userId,
-        actionAuthorization: actionRelAuthorization,
-        displayAuthorization: displayRelAuthorization,
+        actionAuthorization: {},
+        displayAuthorization: {},
       });
       const response = await newAuthorizationModal.save();
       res.status(200).json({ messageType: "S", data: response });

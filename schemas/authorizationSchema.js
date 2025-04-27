@@ -40,6 +40,31 @@ const displayAuthSchema = mongoose.Schema({
     default: true,
     required: true,
   },
+  displayCreateNewModule: {
+    type: Boolean,
+    default: true,
+    required: true,
+  },
+  displayAnalytics: {
+    type: Boolean,
+    default: true,
+    required: true,
+  },
+  displayLearings: {
+    type: Boolean,
+    default: true,
+    required: true,
+  },
+  displayAssignModules: {
+    type: Boolean,
+    default: true,
+    required: true,
+  },
+  displayGroupUsers: {
+    type: Boolean,
+    default: true,
+    required: true,
+  },
 });
 const authorizationSchema = mongoose.Schema(
   {
