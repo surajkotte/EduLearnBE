@@ -1,12 +1,14 @@
 const express = require("express");
 const authorizationModal = require("../modals/authorizationModal");
 const authorizationRouter = express.Router();
-
+const ALLOWED_DATA = "userId actionAuthorization displayAuthorization";
 authorizationRouter.post("/addAutorization", async (req, res) => {
   const { userId, actionRelAuthorization, displayRelAuthorization } = req.body;
   console.log(userId, actionRelAuthorization, displayRelAuthorization);
   try {
-    const responseData = await authorizationModal.findOne({ userId });
+    const responseData = await authorizationModal
+      .findOne({ userId })
+      .populate(ALLOWED_DATA);
     console.log(responseData);
     if (responseData) {
       const actionAuthorizations = responseData.actionAuthorization;
@@ -39,7 +41,9 @@ authorizationRouter.post("/addAutorization", async (req, res) => {
 authorizationRouter.get("/getAutorization/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
-    const responseData = await authorizationModal.findOne({ userId });
+    const responseData = await authorizationModal
+      .findOne({ userId })
+      .populate(ALLOWED_DATA);
     if (responseData) {
       res.status(200).json({ messageType: "S", data: responseData });
     } else {
@@ -48,7 +52,9 @@ authorizationRouter.get("/getAutorization/:userId", async (req, res) => {
         actionAuthorization: {},
         displayAuthorization: {},
       });
-      const response = await newAuthorizationModal.save();
+      const response = await newAuthorizationModal
+        .save()
+        .populate(ALLOWED_DATA);
       res.status(200).json({ messageType: "S", data: response });
     }
   } catch (err) {

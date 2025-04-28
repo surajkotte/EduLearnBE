@@ -4,7 +4,18 @@ const Question = require("../modals/questionModal");
 const categoryRouter = express.Router();
 
 categoryRouter.post("/createNew/:learningModuleId", async (req, res) => {
-  const { title, description, image, categoryType } = req.body;
+  const {
+    title,
+    description,
+    image,
+    categoryType,
+    isTimeLimitAllowed,
+    timeLimit,
+    retryPossible,
+    maxRetryCount,
+    allowRetake,
+    instructions,
+  } = req.body;
   const { learningModuleId } = req.params;
 
   try {
@@ -26,6 +37,18 @@ categoryRouter.post("/createNew/:learningModuleId", async (req, res) => {
           description,
           image,
           categoryType,
+          categoryConfig: {
+            isTimeLimitAllowed,
+            timeLimit,
+            retryPossible,
+            maxRetryCount,
+            allowRetake,
+            instructions,
+          },
+          additionalInfo: {
+            numberOfQuestions: 0,
+            numberOfQuestionsAnswered: 0,
+          },
         });
         await existingCategory.save();
         res.status(200).json({ messageType: "S", data: existingCategory });
@@ -38,6 +61,18 @@ categoryRouter.post("/createNew/:learningModuleId", async (req, res) => {
             description,
             image,
             categoryType,
+            categoryConfig: {
+              isTimeLimitAllowed,
+              timeLimit,
+              retryPossible,
+              maxRetryCount,
+              allowRetake,
+              instructions,
+            },
+            additionalInfo: {
+              numberOfQuestions: 0,
+              numberOfQuestionsAnswered: 0,
+            },
           },
         ],
         learningModuleId,
@@ -73,14 +108,21 @@ categoryRouter.get("/getCategoryById/:learningModuleId", async (req, res) => {
 });
 
 categoryRouter.get(
-  "/getCategoryTestConfig/:learningModuleId",
+  "/getCategoryTestConfig/:learningModuleId/:categoryId",
   async (req, res) => {
+    const { learningModuleId, categoryId } = req.params;
     try {
       const category = await Category.findOne({ learningModuleId });
       if (!category) {
         return res.status(200).json({ messageType: "S", data: [] });
       }
-      res.status(200).json({ messageType: "S", data: category?.testConfig });
+      const testConfig = category.categoryData.find(
+        (item) => item._id.toString() === categoryId
+      );
+      if (!testConfig) {
+        return res.status(200).json({ messageType: "S", data: [] });
+      }
+      res.status(200).json({ messageType: "S", data: testConfig?.categoryConfig });
     } catch (err) {
       res.status(500).json({ messageType: "E", message: err.message });
     }

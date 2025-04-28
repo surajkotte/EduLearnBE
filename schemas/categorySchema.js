@@ -23,6 +23,14 @@ const categoryMetaData = new mongoose.Schema({
     required: true,
   },
   additionalInfo: metaDataSchema,
+  categoryConfig: {
+    isTimeLimitAllowed: { type: Boolean, default: false },
+    timeLimit: { type: Number, default: 0 },
+    retryPossible: { type: Boolean, default: false },
+    maxRetryCount: { type: Number, default: 0 },
+    allowRetake: { type: Boolean, default: false },
+    instructions: { type: String },
+  },
 });
 const categorySchema = new mongoose.Schema(
   {
@@ -31,14 +39,6 @@ const categorySchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "LearningModule",
       required: true,
-    },
-    testConfig: {
-      isTimeLimitAllowed: { type: Boolean, default: false },
-      timeLimit: { type: Number, default: 0 }, // in seconds or minutes
-      retryPossible: { type: Boolean, default: false },
-      maxRetryCount: { type: Number, default: 0 },
-      allowRetake: { type: Boolean, default: false },
-      instructions: { type: String },
     },
   },
   {
