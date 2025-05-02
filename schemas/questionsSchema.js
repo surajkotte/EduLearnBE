@@ -8,12 +8,12 @@ const mcqSchame = new mongoose.Schema(
         isAnswer: { type: Boolean, default: false },
       },
     ],
-    answerSelected: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Option",
-      default: null,
-    },
-    isCorrect: { type: Boolean, default: false },
+    // answerSelected: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "Option",
+    //   default: null,
+    // },
+    // isCorrect: { type: Boolean, default: false },
   },
   {
     timestamps: true,

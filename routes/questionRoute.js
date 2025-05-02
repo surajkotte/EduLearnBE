@@ -1,5 +1,6 @@
 const express = require("express");
 const Question = require("../modals/questionModal");
+const AnswerModel = require("../modals/AnswerModel");
 const questionRouter = express.Router();
 const ALLOWED_DATA = "option";
 
