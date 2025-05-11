@@ -25,7 +25,6 @@ learningModuleRouter.get(
             readAccess: true,
             writeAccess: true,
           }));
-          console.log(updatedData);
           res.status(200).json({ messageType: "S", data: updatedData });
         } else {
           const getAssignedModules = await UserModuleModel.findOne({

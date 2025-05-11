@@ -18,16 +18,17 @@ const userRouter = require("./routes/UserRoute");
 const authorizationRouter = require("./routes/authorizationRoute");
 const userGroupRouter = require("./routes/userGroupRoute");
 const answerRouter = require("./routes/AnswersRoute");
+const userAuth = require("./middlewares/auth");
 app.use(bodyParser.urlencoded({ extended: true }));
 dotenv.config();
 const PORT = process.env.PORT;
 app.use("/", userRouter);
-app.use("/learning/", learningModuleRouter);
-app.use("/category/", categoryRouter);
-app.use("/questions/", questionRouter);
-app.use("/authorization/", authorizationRouter);
-app.use("/userroute/", userGroupRouter);
-app.use("/answers/", answerRouter);
+app.use("/learning/", userAuth, learningModuleRouter);
+app.use("/category/", userAuth, categoryRouter);
+app.use("/questions/", userAuth, questionRouter);
+app.use("/authorization/", userAuth, authorizationRouter);
+app.use("/userroute/", userAuth, userGroupRouter);
+app.use("/answers/", userAuth, answerRouter);
 connectDB()
   .then(() => {
     app.listen(PORT, () => {

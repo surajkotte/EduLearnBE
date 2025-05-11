@@ -181,7 +181,7 @@ UserRouter.get("/getAllUsers/:organizationId", userAuth, async (req, res) => {
   }
 });
 
-UserRouter.put("/updateUser/:userId", async (req, res) => {
+UserRouter.put("/updateUser/:userId", userAuth, async (req, res) => {
   const { userId } = req.params;
   const { firstName, lastName, emailId, dateOfBirth, gender, photoURL } =
     req.body;

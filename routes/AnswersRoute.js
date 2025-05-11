@@ -19,26 +19,28 @@ answerRouter.post("/updateanswer/:categoryId", async (req, res) => {
         { new: true }
       );
       if (updatedAnswer) {
+        console.log(questions.questionData[0].options);
         const modifiedAnswerData = updatedAnswer.answerSelected.map(
           (answer) => {
-            const question = questions.questionData.find(
+            const question = questions?.questionData.find(
               (question) =>
-                question._id.toString() === answer.questionId.toString()
+                question?._id?.toString() === answer?.questionId?.toString()
             );
             if (question) {
               return {
                 ...answer.toObject(),
                 isCorrect: question.options.find(
-                  (option) => option?._id === answer.answerId
-                ).isAnswer,
+                  (option) =>
+                    option?._id?.toString() === answer?.answerId?.toString()
+                )?.isAnswer,
               };
             }
           }
         );
-        updatedAnswer.answerSelected = modifiedAnswerData;
-        response.status(200).json({
+        //updatedAnswer.answerSelected = modifiedAnswerData;
+        res.status(200).json({
           messageType: "S",
-          data: updatedAnswer,
+          data: modifiedAnswerData,
         });
         return;
       }
@@ -52,19 +54,20 @@ answerRouter.post("/updateanswer/:categoryId", async (req, res) => {
       const response = await newAnswer.save();
       const modifiedAnswerData = response.answerSelected.map((answer) => {
         const question = questions.questionData.find(
-          (question) => question._id.toString() === answer.questionId.toString()
+          (question) =>
+            question?._id.toString() === answer?.questionId.toString()
         );
         if (question) {
           return {
             ...answer.toObject(),
             isCorrect: question.options.find(
-              (option) => option?._id === answer.answerId
+              (option) =>
+                option?._id?.toString() === answer.answerId?.toString()
             ).isAnswer,
           };
         }
       });
-      response.answerSelected = modifiedAnswerData;
-      res.status(200).json({ messageType: "S", data: response });
+      res.status(200).json({ messageType: "S", data: modifiedAnswerData });
     }
   } catch (err) {
     res.status(400).json({ messageType: "E", message: err.message });

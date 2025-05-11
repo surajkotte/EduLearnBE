@@ -1,7 +1,6 @@
 const JWT = require("jsonwebtoken");
 const User = require("../modals/userModal");
 const userAuth = async (req, res, next) => {
-  console.log(req);
   const cookies = req.headers.cookie;
   console.log(cookies);
   try {
@@ -12,6 +11,7 @@ const userAuth = async (req, res, next) => {
     const decodedObject = await JWT.verify(token[1], process.env.JWT_SECRET);
     if (decodedObject) {
       const { id } = decodedObject;
+      req.customObject = { userId: id };
       // console.log(decodedObject);
       const userData = await User.findById(id);
       if (!userData) {
