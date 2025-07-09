@@ -30,7 +30,9 @@ UserRouter.post("/login", async (req, res) => {
       //     "Access-Control-Allow-Headers",
       //     "Origin,X-Requested-With,Content-Type,Accept,content-type,application/json"
       //   );
-      console.log("sending response");
+      const organizationFind = await organizationModel.findOne(
+        userData?.organizationId
+      );
       res.status(200).json({
         messageType: "S",
         data: {
@@ -44,6 +46,8 @@ UserRouter.post("/login", async (req, res) => {
           id: userData?._id,
           organizationId: userData?.organizationId,
           userCategory: userData?.userCategory,
+          organizationLogo: organizationFind?.organizationLogo,
+          organizationImage: organizationFind?.organizationImage,
         },
       });
     } else {

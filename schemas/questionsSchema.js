@@ -30,6 +30,7 @@ const questionSchema = new mongoose.Schema(
     selectAll: { type: Boolean, default: false },
     retryPossible: { type: Boolean, default: false },
     maxRetryCount: { type: Number, default: 0 },
+    maxRetryCountUsed: { type: Number, default: 0 },
     timeTaken: { type: Number, default: 0 },
     isTimeLimitAllowed: { type: Boolean, default: false },
     timeLimit: { type: Number, default: 0 },
