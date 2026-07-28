@@ -30,6 +30,7 @@ const userAuth = async (req, res, next) => {
       throw new Error("Unable to parse token");
     }
   } catch (err) {
+    console.log(err)
     res.status(401).json({ messageType: "E", message: err.message });
   }
 };

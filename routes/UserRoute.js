@@ -33,6 +33,7 @@ UserRouter.post("/login", async (req, res) => {
       const organizationFind = await organizationModel.findOne(
         userData?.organizationId
       );
+
       res.status(200).json({
         messageType: "S",
         data: {
