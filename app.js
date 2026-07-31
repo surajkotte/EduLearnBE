@@ -19,6 +19,7 @@ const authorizationRouter = require("./routes/authorizationRoute");
 const userGroupRouter = require("./routes/userGroupRoute");
 const answerRouter = require("./routes/AnswersRoute");
 const userAuth = require("./middlewares/auth");
+const subjectRouter = require("./routes/SubjectDashboard");
 app.use(bodyParser.urlencoded({ extended: true }));
 dotenv.config();
 const PORT = process.env.PORT;
@@ -29,6 +30,7 @@ app.use("/questions/", userAuth, questionRouter);
 app.use("/authorization/", userAuth, authorizationRouter);
 app.use("/userroute/", userAuth, userGroupRouter);
 app.use("/answers/", userAuth, answerRouter);
+app.use("/subject/", userAuth, subjectRouter)
 connectDB()
   .then(() => {
     app.listen(PORT, () => {
