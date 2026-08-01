@@ -1,10 +1,11 @@
 const mongoose = require("mongoose");
 
 const metaDataSchema = mongoose.Schema({
-  name: { type: String },
+  id: { type: mongoose.Schema.ObjectId, required: true },
+  fileName: { type: String },
   mimeType: { type: String },
-  fileSyze: { type: Number, required: true },
-  s3Url: { type: String },
+  fileSize: { type: Number, required: true },
+  folderPrefix: { type: String },
 });
 
 const subjectMetadataSchema = new mongoose.Schema({
@@ -18,6 +19,6 @@ const subjectMetadataSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     required: true,
   },
-  schmea: metaDataSchema,
+  schmea: [metaDataSchema],
 });
 module.exports = subjectMetadataSchema;
