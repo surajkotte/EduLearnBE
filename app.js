@@ -1,4 +1,5 @@
 const express = require("express");
+const { vectorWorker } = require("./Worker/VectorWorker");
 const app = express();
 const dotenv = require("dotenv");
 const cors = require("cors");
@@ -30,7 +31,7 @@ app.use("/questions/", userAuth, questionRouter);
 app.use("/authorization/", userAuth, authorizationRouter);
 app.use("/userroute/", userAuth, userGroupRouter);
 app.use("/answers/", userAuth, answerRouter);
-app.use("/subject/", userAuth, subjectRouter)
+app.use("/subject/", userAuth, subjectRouter);
 connectDB()
   .then(() => {
     app.listen(PORT, () => {

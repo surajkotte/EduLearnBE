@@ -10,6 +10,7 @@ const subjectMetaModel = require("../modals/SubjectModel");
 const { ListObjectsV2Command } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const userAuth = require("../middlewares/auth");
+const { vectorPushQueue } = require("../config/messageQueueConnection");
 const subjectModel = require("../modals/SubjectModel");
 const res = require("express/lib/response");
 const subjectRouter = express.Router();
@@ -41,6 +42,7 @@ subjectRouter.post("/post/files", userAuth, async (req, res, next) => {
           });
           const url = await getSignedUrl(s3, command, { expiresIn: 300 });
           try {
+            const Id = new mongoose.Types.ObjectId();
             await subjectMetaModel.findOneAndUpdate(
               { learningModuleId: moduleId, categoryId: subjectId },
               {
@@ -50,17 +52,28 @@ subjectRouter.post("/post/files", userAuth, async (req, res, next) => {
                   categoryId: subjectId,
                 },
                 $push: {
-                  schmea: {
-                    id: new mongoose.Types.ObjectId(),
+                  schema: {
+                    id: Id,
                     fileName: file.fileName,
                     mimeType: file.type,
                     fileSize: file.size || 0,
                     folderPrefix: objectKey,
+                    status: "uploaded",
+                    uploadedAt: new Date(),
+                    processedAt: null,
+                    errorMessage: null,
                   },
                 },
               },
               { upsert: true, new: true },
             );
+            vectorPushQueue.add("processFile", {
+              documentId: Id,
+              fileType: file.type,
+              subjectId: subjectId,
+              learningModuleId: moduleId,
+              objectKey: objectKey,
+            });
           } catch (saveErr) {
             console.error("Error saving subject metadata:", saveErr);
           }

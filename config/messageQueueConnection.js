@@ -11,7 +11,7 @@ const redisConnection = new Redis({
 });
 
 const vectorPushQueue = new Queue("VectorPush", {
-  connection: redisConnection,
+  connection: redisConnection
 });
 
 module.exports = {
